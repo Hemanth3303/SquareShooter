@@ -108,6 +108,9 @@ project "Game"
 	}
 
 	links {"raylib"}
+
+	pchheader("pch.hpp")
+	pchsource("%{prj.location}/src/pch.cpp")
 	
 	includedirs { 
 		"%{wks.location}/vendor/raylib/src"
@@ -119,6 +122,7 @@ project "Game"
 	filter { "system:windows", "action:vs*" }
 		defines{ 
 			"STRICT",
+			"NOMINMAX",
 			"WINDOWS_LEAN_AND_MEAN",
 			"_WINSOCK_DEPRECATED_NO_WARNINGS", 
 			"_CRT_SECURE_NO_WARNINGS",

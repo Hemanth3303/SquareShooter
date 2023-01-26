@@ -1,15 +1,11 @@
-#include "raylib.h"
+#include "pch.hpp"
 
-int main(int argc, char** argv){
-	InitWindow(640, 480, "Hello Raylib");
-	SetTargetFPS(60);
+#include "Game.hpp"
 
-	while (!WindowShouldClose()) {
-		BeginDrawing();
-		ClearBackground(BLACK);
-		EndDrawing();
-	}
-	CloseWindow();
+int main(int argc, char** argv) {
+
+	Game game(960, 540, "TopDownShooter");
+	game.run();
 
 	return 0;
 }
