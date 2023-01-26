@@ -12,8 +12,8 @@ you need the latest version of [premake5](https://github.com/premake/premake-cor
 
 <ol>
   <li>clone the repo</li>
-  <li>run `premake5 generator_name` eg: `premake5 gmake2` </li>
-  <li>build it eg: `make -j4` </li>
+  <li>run <code>premake5 generator_name</code> eg: <code>premake5 gmake2</code> </li>
+  <li>build it eg: <code>make -j4</code> </li>
   <li> go to bin/osname-configuration/ and run the executable eg: bin/windows-Debug-x86_64/ and run Square-Shooter.exe</li>
 </ol>
 
