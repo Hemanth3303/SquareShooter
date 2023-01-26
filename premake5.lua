@@ -90,7 +90,7 @@ project "Game"
 	cppdialect "C++20"
 	cdialect "C17"
 	staticruntime "On"
-	targetname "Game"
+	targetname "Square-Shooter"
 	systemversion "latest"
 	
 	vpaths 

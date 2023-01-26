@@ -12,16 +12,11 @@ Game::Game(int32_t winWidth, int32_t winHeight, std::string&& winTitle, bool isR
 
 	m_IsRunning = true;
 
-	initEntities();
+	init();
 }
 
 Game::~Game() {
 	CloseWindow();
-}
-
-void Game::initEntities() {
-	m_Player = std::make_shared<Player>(100.0f, 100.0f, 60.0f, 60.0f);
-	m_Entities.emplace_back(m_Player);
 }
 
 void Game::run() {
@@ -64,35 +59,156 @@ void Game::run() {
 			frames = 0;
 			updates = 0;
 			//std::cout << "FPS: " << m_FPS << " | UPS: " << m_UPS << "\n";
+			//std::cout << "GAME STATE: " << m_State << "\n";
 		}
 	}
 }
 
 void Game::handleEvents() {
-	for (const auto& entity : m_Entities) {
-		entity->handleEvents();
+	m_Player->handleEvents();
+	for (const auto& enemy : m_Enemies) {
+		enemy->handleEvents();
 	}
+
+	switch (m_State) {
+		case States::Menu:
+			if (IsKeyPressed(KEY_SPACE)) {
+				m_State = States::Playing;
+			}
+			break;
+		case States::Playing:
+			if (IsKeyPressed(KEY_P)) {
+				m_State = States::Pause;
+			}
+			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+				m_Player->shootBullets();
+			}
+			break;
+		case States::Pause:
+			if (IsKeyPressed(KEY_P)) {
+				m_State = States::Playing;
+			}
+			break;
+		case States::GameOver:
+			if (IsKeyPressed(KEY_R)) {
+				init();
+				m_State = States::Playing;
+			}
+			break;
+	}
+}
+
+void Game::init() {
+	m_Player.reset();
+	m_Enemies.clear();
+	m_Player = std::make_unique<Player>(300.0f, 200.0f, 50.0f, 50.0f);
+	m_Score = 0;
+	m_State = States::Menu;
 }
 
 void Game::update(float dt) {
 	if (WindowShouldClose()) {
 		m_IsRunning = false;
 	}
-	for (const auto& entity : m_Entities) {
-		entity->update(dt);
+	
+	switch (m_State) {
+		case States::Playing:
+			playingUpdate(dt);
+			break;
 	}
+}
+
+void Game::playingUpdate(float dt) {
+	m_Player->update(dt);
+	for (const auto& enemy : m_Enemies) {
+		enemy->update(dt);
+	}
+
+	m_EnemyTimer += dt;
+	if (m_EnemyTimer > 1.5) {
+		m_EnemyTimer = 0.0;
+
+		int32_t enemyX = 0, enemyY = 0;
+		int radius = GetRandomValue(10, 25);
+
+		if (GetRandomValue(0, 1) < 0.5) {
+			enemyX = GetRandomValue(0, 1) < 0.5 ? 0 - radius : m_WinWidth + radius;
+			enemyY = GetRandomValue(0, m_WinHeight);
+		}
+		else {
+			enemyX = GetRandomValue(0, m_WinWidth);
+			enemyY = GetRandomValue(0, 1) < 0.5 ? 0 - radius : m_WinHeight + radius;
+		}
+
+		m_Enemies.emplace_back(std::make_shared<Enemy>(static_cast<float>(enemyX), static_cast<float>(enemyY), 30.0f, 30.0f, m_Player));
+	}
+
+	handlePlayerEnemyCollision();
+	handleBulletEnemyCollision();
 }
 
 void Game::render() {
 	BeginDrawing();
 	ClearBackground(Color(0, 154, 23, 255));
 	
-	DrawText("SCORE: ", 0, 0, 32, BLACK);
-	DrawText(std::to_string(m_Score).c_str(), 130, 0, 32, BLACK);
-
-	for (const auto& entity : m_Entities) {
-		entity->render();
+	switch (m_State) {
+		case States::Menu:
+			menuRender();
+			break;
+		case States::Playing:
+			playingRender();
+			break;
+		case States::Pause:
+			playingRender();
+			DrawText("Press P to UnPause", m_WinWidth / 2 - 180, 300, 32, BLACK);
+			break;
+		case States::GameOver:
+			gameOverRender();
+			break;
 	}
 
 	EndDrawing();
+}
+
+void Game::menuRender() {
+	DrawText("Square Shooter", m_WinWidth / 2 - 180 , 200, 32, BLACK);
+	DrawText("Press Space Key To Start", m_WinWidth / 2 - 180, 300, 32, BLACK);
+	DrawText("Press P Key To Pause", m_WinWidth / 2 - 180, 350, 32, BLACK);
+}
+
+void Game::playingRender() {
+	DrawText("SCORE: ", 0, 0, 32, BLACK);
+	DrawText(std::to_string(m_Score).c_str(), 130, 0, 32, BLACK);
+
+	m_Player->render();
+	for (const auto& enemy : m_Enemies) {
+		enemy->render();
+	}
+}
+
+void Game::gameOverRender() {
+	DrawText("Your Score Was: ", m_WinWidth / 2 - 180, 240, 32, BLACK);
+	DrawText(std::to_string(m_Score).c_str(), m_WinWidth / 2 + 100, 240, 32, BLACK);
+	DrawText("Press R to restart", m_WinWidth / 2 - 180, 300, 32, BLACK);
+}
+
+void Game::handlePlayerEnemyCollision() {
+	for (auto& enemy : m_Enemies) {
+		if (CheckCollisionRecs(m_Player->getBounds(), enemy->getBounds())) {
+			m_State = States::GameOver;
+		}
+	}
+}
+
+void Game::handleBulletEnemyCollision() {
+	for (size_t i = 0; i < m_Player->getBullets().size(); i++) {
+		for (size_t j = 0; j < m_Enemies.size(); j++) {
+			if (CheckCollisionRecs(m_Player->getBullets()[i].getBounds(), m_Enemies[j]->getBounds())) {
+				m_Score++;
+				m_Player->getBullets().erase(m_Player->getBullets().begin() + i);
+				m_Enemies.erase(m_Enemies.begin() + j);
+				return;
+			}
+		}
+	}
 }

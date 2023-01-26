@@ -48,10 +48,6 @@ void Player::handleEvents() {
 		m_Vel.y = 0;
 	}
 
-	if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-		shootBullets();
-	}
-
 }
 
 void Player::render() {
@@ -89,7 +85,7 @@ void Player::customUpdates(float dt) {
 
 void Player::shootBullets() {
 	if (shootTimer > 0.5f) {
-		m_Bullets.emplace_back(m_Bounds.x + m_Bounds.width / 4, m_Bounds.y + m_Bounds.height / 4, 30.0f, 30.0f);
+		m_Bullets.emplace_back(m_Bounds.x + m_Bounds.width / 4, m_Bounds.y + m_Bounds.height / 4, 10.0f, 10.0f);
 		shootTimer = 0.0f;
 	}
 }

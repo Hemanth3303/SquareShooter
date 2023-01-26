@@ -12,9 +12,11 @@ public:
 	virtual void handleEvents() override;
 	virtual void render() override;
 	virtual void customUpdates(float dt) override;
+	void shootBullets();
+
+	inline std::vector<Bullet>& getBullets() { return m_Bullets; }
+
 private:
 	std::vector<Bullet> m_Bullets;
-private:
-	void shootBullets();
 	float shootTimer = 2.0f;
 };
