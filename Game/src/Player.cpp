@@ -1,5 +1,6 @@
 #include "pch.hpp"
 #include "Player.hpp"
+#include "AudioManager.hpp"
 
 Player::Player(float x, float y, float w, float h)
 	: Entity(x, y, w, h) {
@@ -86,6 +87,7 @@ void Player::customUpdates(float dt) {
 void Player::shootBullets() {
 	if (shootTimer > 0.5f) {
 		m_Bullets.emplace_back(m_Bounds.x + m_Bounds.width / 4, m_Bounds.y + m_Bounds.height / 4, 10.0f, 10.0f);
+		AudioManager::PlayShootSound();
 		shootTimer = 0.0f;
 	}
 }

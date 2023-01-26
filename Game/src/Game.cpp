@@ -12,10 +12,13 @@ Game::Game(int32_t winWidth, int32_t winHeight, std::string&& winTitle, bool isR
 
 	m_IsRunning = true;
 
+	AudioManager::Init();
+
 	init();
 }
 
 Game::~Game() {
+	AudioManager::ShutDown();
 	CloseWindow();
 }
 
@@ -31,6 +34,8 @@ void Game::run() {
 	double deltaUPS = 0, deltaFPS = 0;
 
 	double dt = 1.0 / m_TargetUPS;
+
+	AudioManager::PlayBgMusic();
 
 	while (m_IsRunning) {
 		double currentTime = getTimeInNanoSeconds();
@@ -110,7 +115,7 @@ void Game::update(float dt) {
 	if (WindowShouldClose()) {
 		m_IsRunning = false;
 	}
-	
+	AudioManager::UpdateBgMusic();
 	switch (m_State) {
 		case States::Playing:
 			playingUpdate(dt);
@@ -174,6 +179,7 @@ void Game::menuRender() {
 	DrawText("Square Shooter", m_WinWidth / 2 - 180 , 200, 32, BLACK);
 	DrawText("Press Space Key To Start", m_WinWidth / 2 - 180, 300, 32, BLACK);
 	DrawText("Press P Key To Pause", m_WinWidth / 2 - 180, 350, 32, BLACK);
+	DrawText("Press WASD To Move", m_WinWidth / 2 - 180, 400, 32, BLACK);
 }
 
 void Game::playingRender() {
@@ -196,6 +202,7 @@ void Game::handlePlayerEnemyCollision() {
 	for (auto& enemy : m_Enemies) {
 		if (CheckCollisionRecs(m_Player->getBounds(), enemy->getBounds())) {
 			m_State = States::GameOver;
+			AudioManager::PlayDieSound();
 		}
 	}
 }
@@ -207,6 +214,7 @@ void Game::handleBulletEnemyCollision() {
 				m_Score++;
 				m_Player->getBullets().erase(m_Player->getBullets().begin() + i);
 				m_Enemies.erase(m_Enemies.begin() + j);
+				AudioManager::PlayHitSound();
 				return;
 			}
 		}

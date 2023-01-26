@@ -5,6 +5,7 @@
 #include "Player.hpp"
 #include "Enemy.hpp"
 #include "States.hpp"
+#include "AudioManager.hpp"
 
 class Game {
 public:
