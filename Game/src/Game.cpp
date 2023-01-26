@@ -20,8 +20,8 @@ Game::~Game() {
 }
 
 void Game::initEntities() {
-	std::unique_ptr<Entity> player = std::make_unique<Player>(100.0f, 100.0f, 50.0f, 50.0f);
-	m_Entities.emplace_back(std::move(player));
+	m_Player = std::make_shared<Player>(100.0f, 100.0f, 60.0f, 60.0f);
+	m_Entities.emplace_back(m_Player);
 }
 
 void Game::run() {
