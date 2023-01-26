@@ -11,7 +11,7 @@ You can download from [the game's itch.io page](https://hemanth03.itch.io/square
 you need the latest version of [premake5](https://github.com/premake/premake-core)<br>
 
 <ol>
-  <li>clone the repo<li>
+  <li>clone the repo</li>
   <li>run `premake5 generator_name` eg: `premake5 gmake2` </li>
   <li>build it eg: `make -j4` </li>
   <li> go to bin/osname-configuration/ and run the executable eg: bin/windows-Debug-x86_64/ and run Square-Shooter.exe</li>
