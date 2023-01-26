@@ -28,6 +28,8 @@ private:
 	std::string m_WinTitle;
 	bool m_IsRunning = false;
 
+	int32_t m_Score = 0;
+
 	std::shared_ptr<Entity> m_Player;
 	std::vector<std::shared_ptr<Entity>> m_Entities;
 };

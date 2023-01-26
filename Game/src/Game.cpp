@@ -86,6 +86,9 @@ void Game::update(float dt) {
 void Game::render() {
 	BeginDrawing();
 	ClearBackground(Color(0, 154, 23, 255));
+	
+	DrawText("SCORE: ", 0, 0, 32, BLACK);
+	DrawText(std::to_string(m_Score).c_str(), 130, 0, 32, BLACK);
 
 	for (const auto& entity : m_Entities) {
 		entity->render();
