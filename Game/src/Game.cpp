@@ -177,9 +177,10 @@ void Game::render() {
 
 void Game::menuRender() {
 	DrawText("Square Shooter", m_WinWidth / 2 - 180 , 200, 32, BLACK);
-	DrawText("Press Space Key To Start", m_WinWidth / 2 - 180, 300, 32, BLACK);
-	DrawText("Press P Key To Pause", m_WinWidth / 2 - 180, 350, 32, BLACK);
-	DrawText("Press WASD To Move", m_WinWidth / 2 - 180, 400, 32, BLACK);
+	DrawText("Press Space Key To Start", m_WinWidth / 2 - 220, 300, 32, BLACK);
+	DrawText("Press P Key To Pause", m_WinWidth / 2 - 220, 350, 32, BLACK);
+	DrawText("Press WASD To Move", m_WinWidth / 2 - 220, 400, 32, BLACK);
+	DrawText("Press Left Mouse Button to Shott", m_WinWidth / 2 - 220, 440, 32, BLACK);
 }
 
 void Game::playingRender() {
