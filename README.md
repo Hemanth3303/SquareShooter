@@ -1,4 +1,4 @@
-# TopDownShooter
+# Square Shooter
 
 Made in C++ and Raylib in 8-ish hours
 <br>
